@@ -14,6 +14,7 @@ type RepoInterface interface {
 type Service interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
 	FindUser(ctx context.Context, query string) (*model.UserModel, error)
+	AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error)
 }
 
 type service struct {
@@ -27,9 +28,13 @@ func New(r RepoInterface) Service {
 }
 
 func (f *service) SaveUser(ctx context.Context, user *model.UserModel) error {
-	return f.SaveUser(ctx, user)
+	return f.repo.SaveUser(ctx, user)
 }
 
 func (f *service) FindUser(ctx context.Context, query string) (*model.UserModel, error) {
-	return f.FindUser(ctx, query)
+	return f.repo.FindUserByIndentifier(ctx, query)
+}
+
+func (f *service) AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error) {
+	panic("Not implemented") //TODO: implement this method
 }

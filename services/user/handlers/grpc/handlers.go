@@ -2,8 +2,10 @@ package grpcHandler
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sri2103/chat_me/protos/user"
+	"github.com/sri2103/chat_me/services/user/model"
 	"github.com/sri2103/chat_me/services/user/service"
 )
 
@@ -13,17 +15,56 @@ type Handler struct {
 }
 
 func NewGrpcServerHandler(srv service.Service) user.UserServiceServer {
-	return &Handler{}
+	return &Handler{service: srv}
 }
 
-func (h *Handler) AuthenticateUser(_ context.Context, _ *user.AuthenticateRequest) (*user.AuthenticateResponse, error) {
-	panic("not implemented") // TODO: Implement
+func (h *Handler) AuthenticateUser(ctx context.Context, gr *user.AuthenticateRequest) (*user.AuthenticateResponse, error) {
+	username := gr.GetUsername()
+	password := gr.GetPassword()
+	usr, err := h.service.AuthenticateUser(ctx, &model.Credentials{
+		UserName: username,
+		Password: password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &user.AuthenticateResponse{
+		UserId: usr.UserId,
+
+		Username:      usr.UserName,
+		Authenticated: true,
+	}, nil
+
 }
 
-func (h *Handler) GetUserDetails(_ context.Context, _ *user.GetUserRequest) (*user.GetUserResponse, error) {
-	panic("not implemented") // TODO: Implement
+func (h *Handler) GetUserDetails(ctx context.Context, gr *user.GetUserRequest) (*user.GetUserResponse, error) {
+	user_id := gr.GetUserId()
+	usr, err := h.service.FindUser(ctx, fmt.Sprintf("%s=%s", "user_id", user_id))
+	if err != nil {
+		return nil, err
+	}
+	return &user.GetUserResponse{
+		UserId:   usr.UserId,
+		Email:    usr.Email,
+		Username: usr.UserName,
+		Status:   "",
+	}, nil
+
 }
 
-func (h *Handler) UpdateUserDetails(_ context.Context, _ *user.UpdateUserRequest) (*user.UpdateUserResponse, error) {
-	panic("not implemented") // TODO: Implement
+func (h *Handler) UpdateUserDetails(ctx context.Context, gr *user.UpdateUserRequest) (*user.UpdateUserResponse, error) {
+	var usr model.UserModel
+	usr.UserId = gr.GetUserId()
+	usr.Email = gr.GetEmail()
+	usr.UserName = gr.GetUsername()
+	err := h.service.SaveUser(ctx, &usr)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &user.UpdateUserResponse{
+		Success: true,
+	}
+	return resp, nil
+
 }

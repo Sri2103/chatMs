@@ -10,7 +10,7 @@ type UserModel struct {
 
 type Credentials struct {
 	UserName string `json:"user_name"`
-	password string `json:"password"`
+	Password string `json:"password"`
 }
 
 type Role string
