@@ -1,7 +1,9 @@
 package sqlRepo
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -24,10 +26,34 @@ func NewSqlRepo(cfg *config.Config) service.RepoInterface {
 	}
 }
 
-func (r *sqliteRepo) SaveUser(user *model.UserModel) error {
-	panic("not implemented") // TODO: Implement
+func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	defer func() {
+		_ = tx.Rollback()
+	}()
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	row := tx.QueryRow("select * from User where user_id=?", user.UserId)
+	if row.Err() != nil && errors.Is(row.Err(), sql.ErrNoRows) {
+		// create user
+	} else if row.Err() != nil {
+		return row.Err()
+	}
+
+	_, err = tx.Exec("update User set username=?,email=?,role=?", user.UserName, user.Email, user.Role)
+	if err != nil {
+		return err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
 
-func (r *sqliteRepo) FindUserByIndentifier(query string) *model.UserModel {
+func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) *model.UserModel {
 	panic("not implemented") // TODO: Implement
 }

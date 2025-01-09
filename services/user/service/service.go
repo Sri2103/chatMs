@@ -1,15 +1,19 @@
 package service
 
-import "github.com/sri2103/chat_me/services/user/model"
+import (
+	"context"
+
+	"github.com/sri2103/chat_me/services/user/model"
+)
 
 type RepoInterface interface {
-	SaveUser(user *model.UserModel) error
-	FindUserByIndentifier(query string) *model.UserModel
+	SaveUser(ctx context.Context, user *model.UserModel) error
+	FindUserByIndentifier(ctx context.Context, query string) *model.UserModel
 }
 
 type Service interface {
-	SaveUser(user *model.UserModel) error
-	findUser(query string) *model.UserModel
+	SaveUser(ctx context.Context, user *model.UserModel) error
+	findUser(ctx context.Context, query string) *model.UserModel
 }
 
 type service struct {
@@ -22,10 +26,10 @@ func New(r RepoInterface) Service {
 	}
 }
 
-func (f *service) SaveUser(user *model.UserModel) error {
+func (f *service) SaveUser(ctx context.Context, user *model.UserModel) error {
 	panic("not implemented") // TODO: Implement
 }
 
-func (f *service) findUser(query string) *model.UserModel {
+func (f *service) findUser(ctx context.Context, query string) *model.UserModel {
 	panic("not implemented") // TODO: Implement
 }

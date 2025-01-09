@@ -1,6 +1,8 @@
 package memory
 
 import (
+	"context"
+
 	"github.com/sri2103/chat_me/services/user/model"
 	"github.com/sri2103/chat_me/services/user/service"
 )
@@ -11,10 +13,10 @@ func New() service.RepoInterface {
 	return &repo{}
 }
 
-func (f *repo) SaveUser(user *model.UserModel) error {
+func (f *repo) SaveUser(ctx context.Context, user *model.UserModel) error {
 	panic("not implemented") // TODO: Implement
 }
 
-func (f *repo) FindUserByIndentifier(query string) *model.UserModel {
+func (f *repo) FindUserByIndentifier(ctx context.Context, query string) *model.UserModel {
 	panic("not implemented") // TODO: Implement
 }
