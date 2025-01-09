@@ -63,7 +63,7 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 }
 
 func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error) {
-	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from User where %s"), query)
+	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from User where %s", query))
 	var usr model.UserModel
 	if row.Err() != nil {
 		return &usr, row.Err()
@@ -78,4 +78,5 @@ func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*
 	if err != nil {
 		return &usr, err
 	}
+	return &usr, nil
 }
