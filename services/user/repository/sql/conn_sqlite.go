@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -61,6 +62,20 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 
 }
 
-func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) *model.UserModel {
-	panic("not implemented") // TODO: Implement
+func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error) {
+	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from User where %s"), query)
+	var usr model.UserModel
+	if row.Err() != nil {
+		return &usr, row.Err()
+	}
+	err := row.Scan(
+		usr.UserId,
+		usr.UserName,
+		usr.Email,
+		usr.PasswordHash,
+		usr.Role,
+	)
+	if err != nil {
+		return &usr, err
+	}
 }

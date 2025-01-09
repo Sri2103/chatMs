@@ -8,12 +8,12 @@ import (
 
 type RepoInterface interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
-	FindUserByIndentifier(ctx context.Context, query string) *model.UserModel
+	FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error)
 }
 
 type Service interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
-	findUser(ctx context.Context, query string) *model.UserModel
+	FindUser(ctx context.Context, query string) (*model.UserModel, error)
 }
 
 type service struct {
@@ -30,6 +30,6 @@ func (f *service) SaveUser(ctx context.Context, user *model.UserModel) error {
 	panic("not implemented") // TODO: Implement
 }
 
-func (f *service) findUser(ctx context.Context, query string) *model.UserModel {
+func (f *service) FindUser(ctx context.Context, query string) (*model.UserModel, error) {
 	panic("not implemented") // TODO: Implement
 }
