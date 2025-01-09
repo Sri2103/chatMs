@@ -5,7 +5,7 @@ type UserModel struct {
 	UserName     string `json:"user_name"`
 	Email        string `json:"email"`
 	Role         Role   `json:"role"`
-	passwordHash string `json:"password_hash,omitempty"`
+	PasswordHash string `json:"password_hash,omitempty"`
 }
 
 type Credentials struct {

@@ -26,18 +26,25 @@ func NewSqlRepo(cfg *config.Config) service.RepoInterface {
 	}
 }
 
+func (r *sqliteRepo) createUser(tx *sql.Tx, user *model.UserModel) error {
+	_, err := tx.Exec("insert into User (user_id, username,email,password_hash,role) values (?,?,?,?,?,?)", user.UserId, user.UserName,
+		user.PasswordHash, user.Role)
+	return err
+}
+
 func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error {
 	tx, err := r.db.BeginTx(ctx, nil)
-	defer func() {
-		_ = tx.Rollback()
-	}()
 	if err != nil {
 		log.Println(err.Error())
 		return err
 	}
+	defer func() {
+		_ = tx.Rollback()
+	}()
 	row := tx.QueryRow("select * from User where user_id=?", user.UserId)
 	if row.Err() != nil && errors.Is(row.Err(), sql.ErrNoRows) {
 		// create user
+		return r.createUser(tx, user)
 	} else if row.Err() != nil {
 		return row.Err()
 	}
