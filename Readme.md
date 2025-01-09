@@ -87,6 +87,6 @@ The primary use cases for the chat application include:
 To get started with the chat application, clone the repository and follow the instructions in the respective service directories.
 
 ```bash
-git clone https://github.com/yourusername/chat-application.git
-cd chat-application
+git clone https://github.com/Sri2103/chatMs.git
+cd chatMs
 
