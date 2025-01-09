@@ -45,7 +45,7 @@ func (h *userHandler) Register(c echo.Context) error {
 	}
 	if !resp.Success {
 		h.logger.Error("error from the internal of grpc")
-		return c.String(http.StatusInternalServerError)
+		return c.String(http.StatusInternalServerError, "registration success")
 	}
 	return c.String(http.StatusCreated, "user crested")
 
