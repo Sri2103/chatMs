@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package websocket;
+
+service WebSocketService {
+  rpc Connect (ConnectRequest) returns (ConnectResponse);
+  rpc Disconnect (DisconnectRequest) returns (DisconnectResponse);
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+}
+
+message ConnectRequest {
+  string userId = 1;
+}
+
+message ConnectResponse {
+  bool success = 1;
+}
+
+message DisconnectRequest {
+  string userId = 1;
+}
+
+message DisconnectResponse {
+  bool success = 1;
+}
+
+message SendMessageRequest {
+  string roomId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+message SendMessageResponse {
+  bool success = 1;
+}

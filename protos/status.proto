@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package status;
+
+service StatusService {
+  rpc UpdateUserStatus (UpdateStatusRequest) returns (UpdateStatusResponse);
+  rpc GetUserStatus (GetStatusRequest) returns (GetStatusResponse);
+}
+
+message UpdateStatusRequest {
+  string userId = 1;
+  string status = 2;  // e.g., "online", "offline", "busy"
+}
+
+message UpdateStatusResponse {
+  bool success = 1;
+}
+
+message GetStatusRequest {
+  string userId = 1;
+}
+
+message GetStatusResponse {
+  string userId = 1;
+  string status = 2;
+}
