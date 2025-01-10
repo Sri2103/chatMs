@@ -1,0 +1,17 @@
+# Enable the use of expecter methods in mocks
+with-expecter: True
+
+# Global configuration for Mockery
+
+# Package-specific configurations
+packages:
+  github.com/sri2103/chat_me:
+
+  github.com/sri2103/chat_me/protos/user:
+    config:
+      dir: "./mocks/user"
+    interfaces:
+      UserServiceClient:
+
+                # Specific configuration for the 'Foo' interface
+           
