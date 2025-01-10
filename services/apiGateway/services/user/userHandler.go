@@ -23,8 +23,8 @@ func New(cfg *config.Config) *userHandler {
 
 type registerBody struct {
 	Username string `json:"username"`
-	Email    string `json:"email"`
-	UserId   string `json:"user_id"`
+	Email    string `json:"email" validate:"required"`
+	UserId   string `json:"user_id" validate:"required"`
 }
 
 func (h *userHandler) Register(c echo.Context) error {

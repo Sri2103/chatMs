@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
+	userMock "github.com/sri2103/chat_me/mocks/user"
+	userpb "github.com/sri2103/chat_me/protos/user"
 	"github.com/sri2103/chat_me/services/apiGateway/config"
 )
 
@@ -18,7 +20,11 @@ func Test_userHandler_Register(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 	res := httptest.NewRecorder()
 	ctx := newEchoContex(e, req, res)
-	h := New(&config.Config{})
+	mockInterface := userMock.NewMockUserServiceClient(t)
+	mockInterface.EXPECT().UpdateUserDetails(req.Context(), &userpb.UpdateUserRequest{}).Return(&userpb.UpdateUserResponse{}, nil)
+	h := New(&config.Config{
+		UserClientService: mockInterface,
+	})
 	tests := []struct {
 		name string // description of this test case
 		// Named input parameters for receiver constructor.
