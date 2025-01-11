@@ -24,7 +24,8 @@ func New(cfg *config.Config) *userHandler {
 type registerBody struct {
 	Username string `json:"username"`
 	Email    string `json:"email" validate:"required"`
-	UserId   string `json:"user_id" validate:"required"`
+	UserId   string `json:"user_id,omitempty"`
+	Password string `json:"password" validate:"required"`
 }
 
 func (h *userHandler) Register(c echo.Context) error {
@@ -33,6 +34,9 @@ func (h *userHandler) Register(c echo.Context) error {
 	if err != nil {
 		h.logger.Error("body error in register", zap.Error(err))
 		return c.String(http.StatusBadRequest, "bad Request")
+	}
+	if err := c.Validate(b); err != nil {
+		return err
 	}
 	var gr userpb.UpdateUserRequest
 	gr.Email = b.Email
