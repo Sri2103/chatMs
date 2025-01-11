@@ -54,3 +54,29 @@ func (h *userHandler) Register(c echo.Context) error {
 	return c.String(http.StatusCreated, "user crested")
 
 }
+
+type GetUserResponse struct {
+	UserId   string `json:"user_id"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+}
+
+func (h *userHandler) GetUserDetails(c echo.Context) error {
+	userId := c.QueryParams().Get("userId")
+	var gr userpb.GetUserRequest
+	gr.UserId = userId
+	resp, err := h.userService.GetUserDetails(c.Request().Context(), &gr)
+
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "error from the userCLient")
+	}
+
+	data := &GetUserResponse{
+		UserId:   resp.GetUserId(),
+		Email:    resp.GetEmail(),
+		Username: resp.GetUsername(),
+	}
+
+	return c.JSON(http.StatusOK, data)
+
+}
