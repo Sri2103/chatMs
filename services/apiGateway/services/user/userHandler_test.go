@@ -12,7 +12,7 @@ import (
 	userMock "github.com/sri2103/chat_me/mocks/user"
 	"github.com/sri2103/chat_me/protos/user"
 	"github.com/sri2103/chat_me/services/apiGateway/config"
-	httpServer "github.com/sri2103/chat_me/services/apiGateway/servers/http"
+	"github.com/sri2103/chat_me/services/apiGateway/utils"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -22,7 +22,7 @@ func newEchoContex(e *echo.Echo, req *http.Request, res http.ResponseWriter) ech
 }
 func Test_userHandler_Register(t *testing.T) {
 	e := echo.New()
-	e = httpServer.SetCustomValidator(e)
+	e.Validator = utils.SetCustomValidator()
 
 	t.Run("doing with wrong data", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
