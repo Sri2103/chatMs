@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sri2103/chat_me/services/user/config"
 	"github.com/sri2103/chat_me/services/user/model"
@@ -82,7 +83,8 @@ func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*
 }
 
 func (r *sqliteRepo) CreateUser(ctx context.Context, user *model.UserModel) error {
-
+	id := uuid.New().String()
+	user.UserId = id
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		log.Println(err.Error())
