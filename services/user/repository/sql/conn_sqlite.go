@@ -80,3 +80,18 @@ func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*
 	}
 	return &usr, nil
 }
+
+func (r *sqliteRepo) CreateUser(ctx context.Context, user *model.UserModel) error {
+
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	defer func() {
+		_ = tx.Rollback()
+	}()
+
+	err = r.createUser(tx, user)
+	return err
+}

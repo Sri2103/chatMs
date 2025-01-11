@@ -45,4 +45,8 @@ func Test_userHandler_Register(t *testing.T) {
 
 	})
 
+	t.Run("user data adding", func(t *testing.T) {
+
+	})
+
 }

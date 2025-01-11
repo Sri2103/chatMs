@@ -24,7 +24,6 @@ func New(cfg *config.Config) *userHandler {
 type registerBody struct {
 	Username string `json:"username"`
 	Email    string `json:"email" validate:"required"`
-	UserId   string `json:"user_id,omitempty"`
 	Password string `json:"password" validate:"required"`
 }
 
@@ -38,11 +37,12 @@ func (h *userHandler) Register(c echo.Context) error {
 	if err := c.Validate(b); err != nil {
 		return err
 	}
-	var gr userpb.UpdateUserRequest
+	var gr userpb.RegisterUserRequest
 	gr.Email = b.Email
-	gr.UserId = b.UserId
 	gr.Username = b.Username
-	resp, err := h.userService.UpdateUserDetails(c.Request().Context(), &gr)
+	gr.Password = b.Password
+
+	resp, err := h.userService.RegisterUserDetails(c.Request().Context(), &gr)
 	if err != nil {
 		h.logger.Error("Error from the user service")
 		return c.String(http.StatusInternalServerError, "Error from client user")

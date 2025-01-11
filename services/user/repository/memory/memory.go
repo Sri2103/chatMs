@@ -20,3 +20,7 @@ func (f *repo) SaveUser(ctx context.Context, user *model.UserModel) error {
 func (f *repo) FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error) {
 	panic("not implemented") // TODO: Implement
 }
+
+func (f *repo) CreateUser(ctx context.Context, user *model.UserModel) error {
+	panic("not implementd")
+}

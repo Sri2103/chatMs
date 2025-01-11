@@ -9,12 +9,14 @@ import (
 type RepoInterface interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
 	FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error)
+	CreateUser(ctx context.Context, user *model.UserModel) error
 }
 
 type Service interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
 	FindUser(ctx context.Context, query string) (*model.UserModel, error)
 	AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error)
+	CreateUser(ctx context.Context, user *model.UserModel) error
 }
 
 type service struct {
@@ -37,4 +39,8 @@ func (f *service) FindUser(ctx context.Context, query string) (*model.UserModel,
 
 func (f *service) AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error) {
 	panic("Not implemented") //TODO: implement this method
+}
+
+func (f *service) CreateUser(ctx context.Context, user *model.UserModel) error {
+	panic("Not implemented")
 }

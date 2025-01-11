@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_AuthenticateUser_FullMethodName  = "/user.UserService/AuthenticateUser"
-	UserService_GetUserDetails_FullMethodName    = "/user.UserService/GetUserDetails"
-	UserService_UpdateUserDetails_FullMethodName = "/user.UserService/UpdateUserDetails"
+	UserService_AuthenticateUser_FullMethodName    = "/user.UserService/AuthenticateUser"
+	UserService_GetUserDetails_FullMethodName      = "/user.UserService/GetUserDetails"
+	UserService_UpdateUserDetails_FullMethodName   = "/user.UserService/UpdateUserDetails"
+	UserService_RegisterUserDetails_FullMethodName = "/user.UserService/RegisterUserDetails"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -31,6 +32,7 @@ type UserServiceClient interface {
 	AuthenticateUser(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
 	GetUserDetails(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	UpdateUserDetails(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	RegisterUserDetails(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
 }
 
 type userServiceClient struct {
@@ -71,6 +73,16 @@ func (c *userServiceClient) UpdateUserDetails(ctx context.Context, in *UpdateUse
 	return out, nil
 }
 
+func (c *userServiceClient) RegisterUserDetails(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterUserResponse)
+	err := c.cc.Invoke(ctx, UserService_RegisterUserDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type UserServiceServer interface {
 	AuthenticateUser(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
 	GetUserDetails(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	UpdateUserDetails(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	RegisterUserDetails(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedUserServiceServer) GetUserDetails(context.Context, *GetUserRe
 }
 func (UnimplementedUserServiceServer) UpdateUserDetails(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserDetails not implemented")
+}
+func (UnimplementedUserServiceServer) RegisterUserDetails(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterUserDetails not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +188,24 @@ func _UserService_UpdateUserDetails_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_RegisterUserDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).RegisterUserDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_RegisterUserDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).RegisterUserDetails(ctx, req.(*RegisterUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserDetails",
 			Handler:    _UserService_UpdateUserDetails_Handler,
+		},
+		{
+			MethodName: "RegisterUserDetails",
+			Handler:    _UserService_RegisterUserDetails_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

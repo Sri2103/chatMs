@@ -68,3 +68,21 @@ func (h *Handler) UpdateUserDetails(ctx context.Context, gr *user.UpdateUserRequ
 	return resp, nil
 
 }
+
+func (h *Handler) RegisterUserDetails(ctx context.Context, rr *user.RegisterUserRequest) (*user.RegisterUserResponse, error) {
+	var usr model.UserModel
+	usr.Email = rr.GetEmail()
+	usr.Role = model.Participant
+	usr.UserName = rr.GetUsername()
+	usr.PasswordHash = rr.GetPassword()
+
+	err := h.service.CreateUser(ctx, &usr)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user.RegisterUserResponse{
+		Success: true,
+	}, nil
+
+}

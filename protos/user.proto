@@ -7,7 +7,20 @@ service UserService {
   rpc AuthenticateUser (AuthenticateRequest) returns (AuthenticateResponse);
   rpc GetUserDetails (GetUserRequest) returns (GetUserResponse);
   rpc UpdateUserDetails (UpdateUserRequest) returns (UpdateUserResponse);
+  rpc RegisterUserDetails(RegisterUserRequest) returns (RegisterUserResponse);
 }
+
+message RegisterUserRequest {
+  string username = 1;
+  string email = 2;
+  string password =3;
+}
+
+message RegisterUserResponse {
+  bool success = 1;
+}
+
+
 
 message AuthenticateRequest {
   string username = 1;
@@ -35,6 +48,7 @@ message UpdateUserRequest {
   string userId = 1;
   string username = 2;
   string email = 3;
+  string role = 4;
 }
 
 message UpdateUserResponse {
