@@ -10,4 +10,5 @@ type Config struct {
 	Port              string
 	UserClient        string
 	UserClientService userpb.UserServiceClient
+	AuthClientService userpb.AuthServiceClient
 }

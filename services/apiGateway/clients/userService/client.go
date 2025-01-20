@@ -16,6 +16,6 @@ func ConnectUserClient(cfg *config.Config) (*grpc.ClientConn, error) {
 		return nil, err
 	}
 	cfg.UserClientService = user.NewUserServiceClient(conn)
-
+	cfg.AuthClientService = user.NewAuthServiceClient(conn)
 	return conn, nil
 }
