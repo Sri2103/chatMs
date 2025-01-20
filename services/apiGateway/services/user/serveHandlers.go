@@ -21,6 +21,7 @@ func RegisterUserHandler(e *echo.Echo, cfg *config.Config) {
 	}
 
 	server.POST("/register", handlers.Register)
+	server.POST("/login", handlers.LoginUser)
 	server.GET("/logout", func(c echo.Context) error {
 		return nil
 	}, echojwt.WithConfig(claimConfig))

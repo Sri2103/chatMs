@@ -16,3 +16,12 @@ func RepositoryFactory(cfg *config.Config) service.RepoInterface {
 		return nil
 	}
 }
+
+func AuthRepositoryFaactory(cfg *config.Config) service.AuthServiceRepo {
+	switch cfg.Environment {
+	case "dev":
+		return nil
+	default:
+		return nil
+	}
+}

@@ -17,3 +17,14 @@ type Role string
 
 const Admin Role = "admin"
 const Participant Role = "participant"
+
+type AuthModel struct {
+	ID     string `json:"id"`
+	UserId string `json:"user_id"`
+	AuthId string `json:"auth_id"`
+}
+
+type AuthDetails struct {
+	UserId string `json:"user_id"`
+	AuthId string `json:"auth_id"`
+}

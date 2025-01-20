@@ -10,6 +10,45 @@ service UserService {
   rpc RegisterUserDetails(RegisterUserRequest) returns (RegisterUserResponse);
 }
 
+message CreateAuthRequest {
+  string userId = 1;
+  string authId = 2;
+  string token = 3;
+}
+
+message FetchAuthRequest {
+  string userId = 1;
+  string authId = 2;
+}
+
+message FetchAuthResponse{
+  string Id = 1;
+  string authId = 2;
+  string userId = 3;
+}
+
+
+message DestroyAuthRequest {
+  string authId = 1;
+}
+
+message DestroyAuthResponse {
+  bool success = 1;
+}
+
+
+message CreateAuthResponse {
+  string Id = 1;
+  string authId = 2;
+  string userId = 3;
+}
+
+service AuthService  {
+  rpc CreateAuth(CreateAuthRequest) returns (CreateAuthResponse);
+  rpc DestroyAuth(DestroyAuthRequest) returns (DestroyAuthResponse);
+  rpc FetchAuth (FetchAuthRequest) returns (FetchAuthResponse);
+}
+
 message RegisterUserRequest {
   string username = 1;
   string email = 2;

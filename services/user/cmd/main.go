@@ -9,6 +9,7 @@ import (
 	pb "github.com/sri2103/chat_me/protos/user"
 	"github.com/sri2103/chat_me/services/user/config"
 	grpcHandler "github.com/sri2103/chat_me/services/user/handlers/grpc"
+	"github.com/sri2103/chat_me/services/user/repository"
 	"github.com/sri2103/chat_me/services/user/repository/memory"
 	"github.com/sri2103/chat_me/services/user/service"
 	"google.golang.org/grpc"
@@ -38,9 +39,12 @@ func SetUpGrpCServer(cfg *config.Config) error {
 	}
 	repo := memory.New()
 	service := service.New(repo)
+	AuthRepo := repository.AuthRepositoryFaactory(cfg)
 	s := grpc.NewServer()
 	h := grpcHandler.NewGrpcServerHandler(service)
+	authHandler := grpcHandler.NewGrpcAuthHandler(AuthRepo)
 	pb.RegisterUserServiceServer(s, h)
+	pb.RegisterAuthServiceServer(s, authHandler)
 	err = s.Serve(lis)
 	if err != nil {
 		return nil
