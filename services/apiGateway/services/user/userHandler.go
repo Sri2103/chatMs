@@ -80,3 +80,52 @@ func (h *userHandler) GetUserDetails(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 
 }
+
+type LoginRequest struct {
+	Email    string `join:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+func (h *userHandler) LoginUser(c echo.Context) error {
+	var b LoginRequest
+	err := c.Bind(&b)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	err = c.Validate(b)
+	if err != nil {
+		return err
+	}
+
+	AuthReq := &userpb.AuthenticateRequest{
+		Username: b.Email,
+		Password: b.Password,
+	}
+
+	resp, err := h.userService.AuthenticateUser(c.Request().Context(), AuthReq)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error in remote request")
+	}
+
+	if !resp.Authenticated {
+		return echo.NewHTTPError(http.StatusUnauthorized, "user authentication failed")
+	}
+
+	token, err := CreateToken(&TokenPayload{
+		Name:   resp.GetUsername(),
+		UserId: resp.GetUserId(),
+	})
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error creating token")
+	}
+
+	return c.JSON(http.StatusOK, LoginResponse{
+		Token: *token,
+	})
+}

@@ -1,6 +1,8 @@
 package userHandler
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -25,6 +27,29 @@ func RegisterUserHandler(e *echo.Echo, cfg *config.Config) {
 }
 
 type jwtCustomClaims struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	UserId string `json:"user_id"`
 	jwt.RegisteredClaims
+}
+
+type TokenPayload struct {
+	Name   string `json:"name"`
+	UserId string `json:"user_id"`
+}
+
+func CreateToken(p *TokenPayload) (*string, error) {
+	claims := &jwtCustomClaims{
+		p.Name,
+		p.UserId,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return nil, err
+	}
+
+	return &t, nil
 }
