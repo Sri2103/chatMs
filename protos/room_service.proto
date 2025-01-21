@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package room;
 
+option go_package = "protos/room";
+
 service RoomService {
   rpc CreateRoom (CreateRoomRequest) returns (CreateRoomResponse);
   rpc GetRoomDetails (GetRoomRequest) returns (GetRoomResponse);
@@ -10,7 +12,8 @@ service RoomService {
 
 message CreateRoomRequest {
   string roomName = 1;
-  repeated string userIds = 2;
+  string createdBy = 2;
+  repeated string userIds = 3;
 }
 
 message CreateRoomResponse {
@@ -25,7 +28,8 @@ message GetRoomRequest {
 message GetRoomResponse {
   string roomId = 1;
   string roomName = 2;
-  repeated string userIds = 3;
+  string createdBy =3;
+  repeated string userIds = 4;
 }
 
 message UpdateRoomRequest {
