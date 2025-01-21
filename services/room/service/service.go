@@ -17,3 +17,25 @@ type RoomRepository interface {
 	FindById(ctx context.Context, roomId string) (*model.Room, error)
 	UpdateRoom(ctx context.Context, room *model.Room) error
 }
+
+type RoomService struct {
+	repo RoomRepository
+}
+
+func New(r RoomRepository) Service {
+	return &RoomService{
+		repo: r,
+	}
+}
+
+func (r *RoomService) CreateRoom(ctx context.Context, room *model.Room) (*model.Room, error) {
+	panic("not implemented") // TODO: Implement
+}
+
+func (r *RoomService) GetRoomDetails(ctx context.Context, roomId string) (*model.Room, error) {
+	panic("not implemented") // TODO: Implement
+}
+
+func (r *RoomService) UpdateRoom(ctx context.Context, room *model.Room) error {
+	panic("not implemented") // TODO: Implement
+}

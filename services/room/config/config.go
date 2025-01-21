@@ -3,5 +3,5 @@ package config
 type Config struct {
 	Port        int
 	Environment string
-	SqlPath     string
+	SqlitePath  string
 }
