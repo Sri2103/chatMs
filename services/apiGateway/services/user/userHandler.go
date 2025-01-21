@@ -3,6 +3,7 @@ package userHandler
 import (
 	"net/http"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	userpb "github.com/sri2103/chat_me/protos/user"
@@ -143,8 +144,22 @@ func (h *userHandler) LoginUser(c echo.Context) error {
 }
 
 func (h *userHandler) Logout(c echo.Context) error {
+
+	token, ok := c.Get("user").(*jwt.Token)
+
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "token not found")
+	}
+
+	claims, ok := token.Claims.(jwtCustomClaims)
+
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload claims")
+	}
+
+	authId := claims.AuthId
+
 	ctx := c.Request().Context()
-	authId := ctx.Value("authId").(string)
 	resp, err := h.authService.DestroyAuth(ctx, &userpb.DestroyAuthRequest{
 		AuthId: authId,
 	})
