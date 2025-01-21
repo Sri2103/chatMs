@@ -3,6 +3,7 @@ package userHandler
 import (
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	userpb "github.com/sri2103/chat_me/protos/user"
 	"github.com/sri2103/chat_me/services/apiGateway/config"
@@ -12,12 +13,14 @@ import (
 type userHandler struct {
 	logger      *zap.Logger
 	userService userpb.UserServiceClient
+	authService userpb.AuthServiceClient
 }
 
 func New(cfg *config.Config) *userHandler {
 	return &userHandler{
 		logger:      cfg.Log,
 		userService: cfg.UserClientService,
+		authService: cfg.AuthClientService,
 	}
 }
 
@@ -87,7 +90,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	Token  string `json:"token"`
+	AuthID string `json:"auth_id"`
 }
 
 func (h *userHandler) LoginUser(c echo.Context) error {
@@ -125,7 +129,33 @@ func (h *userHandler) LoginUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error creating token")
 	}
 
-	return c.JSON(http.StatusOK, LoginResponse{
-		Token: *token,
+	authResp, err := h.authService.CreateAuth(c.Request().Context(), &userpb.CreateAuthRequest{
+		UserId: resp.GetUserId(),
+		AuthId: uuid.NewString(),
+		Token:  *token,
 	})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error adding an auth entry")
+	}
+
+	return c.JSON(http.StatusOK, LoginResponse{
+		Token:  *token,
+		AuthID: authResp.AuthId,
+	})
+}
+
+func (h *userHandler) Logout(c echo.Context) error {
+	ctx := c.Request().Context()
+	authId := ctx.Value("authId").(string)
+	resp, err := h.authService.DestroyAuth(ctx, &userpb.DestroyAuthRequest{
+		AuthId: authId,
+	})
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "error deleting auth session")
+	}
+	if !resp.Success {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error deleting auth")
+	}
+	return c.String(http.StatusOK, "logged out")
 }
