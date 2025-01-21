@@ -51,3 +51,7 @@ func SetUpGrpCServer(cfg *config.Config) error {
 	}
 	return nil
 }
+
+func OpenDBPath(cfg *config.Config) error {
+	return nil
+}
