@@ -12,6 +12,7 @@ packages:
       dir: "./mocks/user"
     interfaces:
       UserServiceClient:
+      AuthServiceClient:
 
                 # Specific configuration for the 'Foo' interface
            
