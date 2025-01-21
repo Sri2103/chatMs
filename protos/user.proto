@@ -13,7 +13,6 @@ service UserService {
 message CreateAuthRequest {
   string userId = 1;
   string authId = 2;
-  string token = 3;
 }
 
 message FetchAuthRequest {

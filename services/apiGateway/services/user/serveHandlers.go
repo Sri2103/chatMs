@@ -30,18 +30,21 @@ func RegisterUserHandler(e *echo.Echo, cfg *config.Config) {
 type jwtCustomClaims struct {
 	Name   string `json:"name"`
 	UserId string `json:"user_id"`
+	AuthId string `json:"auth_id"`
 	jwt.RegisteredClaims
 }
 
 type TokenPayload struct {
 	Name   string `json:"name"`
 	UserId string `json:"user_id"`
+	AuthId string `json:"auth_id"`
 }
 
 func CreateToken(p *TokenPayload) (*string, error) {
 	claims := &jwtCustomClaims{
 		p.Name,
 		p.UserId,
+		p.AuthId,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 		},

@@ -119,28 +119,26 @@ func (h *userHandler) LoginUser(c echo.Context) error {
 	if !resp.Authenticated {
 		return echo.NewHTTPError(http.StatusUnauthorized, "user authentication failed")
 	}
+	authResp, err := h.authService.CreateAuth(c.Request().Context(), &userpb.CreateAuthRequest{
+		UserId: resp.GetUserId(),
+		AuthId: uuid.NewString(),
+	})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error adding an auth entry")
+	}
 
 	token, err := CreateToken(&TokenPayload{
 		Name:   resp.GetUsername(),
 		UserId: resp.GetUserId(),
+		AuthId: authResp.AuthId,
 	})
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error creating token")
 	}
 
-	authResp, err := h.authService.CreateAuth(c.Request().Context(), &userpb.CreateAuthRequest{
-		UserId: resp.GetUserId(),
-		AuthId: uuid.NewString(),
-		Token:  *token,
-	})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Error adding an auth entry")
-	}
-
 	return c.JSON(http.StatusOK, LoginResponse{
-		Token:  *token,
-		AuthID: authResp.AuthId,
+		Token: *token,
 	})
 }
 
