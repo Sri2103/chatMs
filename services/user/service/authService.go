@@ -7,13 +7,13 @@ import (
 )
 
 type AuthService interface {
-	CreateAuth(context.Context, *model.AuthDetails) error
+	CreateAuth(context.Context, *model.AuthDetails) (*model.AuthModel, error)
 	FetchAuth(context.Context, *model.AuthDetails) (*model.AuthModel, error)
 	DeleteAuth(context.Context, string) error
 }
 
 type AuthServiceRepo interface {
-	CreateAuth(context.Context, *model.AuthDetails) error
+	CreateAuth(context.Context, *model.AuthDetails) (*model.AuthModel, error)
 	FetchAuth(context.Context, *model.AuthDetails) (*model.AuthModel, error)
 	DeleteAuth(context.Context, string) error
 }
@@ -28,14 +28,14 @@ func NewAuth(r AuthServiceRepo) AuthService {
 	}
 }
 
-func (a AuthServiceReceiver) CreateAuth(_ context.Context, _ *model.AuthDetails) error {
-	panic("not implemented") // TODO: Implement
+func (a AuthServiceReceiver) CreateAuth(ctx context.Context, auth *model.AuthDetails) (*model.AuthModel, error) {
+	return a.repo.CreateAuth(ctx, auth)
 }
 
-func (a AuthServiceReceiver) FetchAuth(_ context.Context, _ *model.AuthDetails) (*model.AuthModel, error) {
-	panic("not implemented") // TODO: Implement
+func (a AuthServiceReceiver) FetchAuth(ctx context.Context, auth *model.AuthDetails) (*model.AuthModel, error) {
+	return a.repo.FetchAuth(ctx, auth)
 }
 
-func (a AuthServiceReceiver) DeleteAuth(_ context.Context, _ string) error {
-	panic("not implemented") // TODO: Implement
+func (a AuthServiceReceiver) DeleteAuth(ctx context.Context, authId string) error {
+	return a.repo.DeleteAuth(ctx, authId)
 }
