@@ -42,5 +42,5 @@ func (f *service) AuthenticateUser(ctx context.Context, auth *model.Credentials)
 }
 
 func (f *service) CreateUser(ctx context.Context, user *model.UserModel) error {
-	panic("Not implemented")
+	return f.repo.CreateUser(ctx, user)
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/sri2103/chat_me/services/user/config"
 	grpcHandler "github.com/sri2103/chat_me/services/user/handlers/grpc"
 	"github.com/sri2103/chat_me/services/user/repository"
-	"github.com/sri2103/chat_me/services/user/repository/memory"
 	"github.com/sri2103/chat_me/services/user/service"
 	"google.golang.org/grpc"
 )
@@ -21,11 +20,13 @@ func main() {
 	sqlitePath := flag.String("sqlite", "", "sqlite Databases path")
 	env := flag.String("env", "dev", "Environment for the service")
 	flag.Parse()
+
 	cfg := &config.Config{
 		Port:        *port,
 		SqlitePath:  *sqlitePath,
 		Environment: *env,
 	}
+	fmt.Println("sqlite path", *sqlitePath)
 	err := SetUpGrpCServer(cfg)
 	if err != nil {
 		log.Fatal(err)
@@ -37,9 +38,9 @@ func SetUpGrpCServer(cfg *config.Config) error {
 	if err != nil {
 		return err
 	}
-	repo := memory.New()
+	repo := repository.RepositoryFactory(cfg)
 	service := service.New(repo)
-	AuthRepo := repository.AuthRepositoryFaactory(cfg)
+	AuthRepo := repository.AuthRepositoryFactory(cfg)
 	s := grpc.NewServer()
 	h := grpcHandler.NewGrpcServerHandler(service)
 	authHandler := grpcHandler.NewGrpcAuthHandler(AuthRepo)

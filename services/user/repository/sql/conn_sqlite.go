@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"path"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -19,7 +20,9 @@ type sqliteRepo struct {
 }
 
 func NewSqlRepo(cfg *config.Config) service.RepoInterface {
-	Db, err := sql.Open("sqlite3", cfg.SqlitePath)
+	p := path.Clean(cfg.SqlitePath)
+	fmt.Println(p, "path for db")
+	Db, err := sql.Open("sqlite3", p)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,8 +32,8 @@ func NewSqlRepo(cfg *config.Config) service.RepoInterface {
 }
 
 func (r *sqliteRepo) createUser(tx *sql.Tx, user *model.UserModel) error {
-	_, err := tx.Exec("insert into User (user_id, username,email,password_hash,role) values (?,?,?,?,?,?)", user.UserId, user.UserName,
-		user.PasswordHash, user.Role)
+	_, err := tx.Exec("insert into User (user_id, username,email,password_hash,role) values (?,?,?,?,?)", user.UserId, user.UserName,
+		user.Email, user.PasswordHash, user.Role)
 	return err
 }
 

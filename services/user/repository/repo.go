@@ -17,10 +17,10 @@ func RepositoryFactory(cfg *config.Config) service.RepoInterface {
 	}
 }
 
-func AuthRepositoryFaactory(cfg *config.Config) service.AuthServiceRepo {
+func AuthRepositoryFactory(cfg *config.Config) service.AuthServiceRepo {
 	switch cfg.Environment {
 	case "dev":
-		return nil
+		return sqlRepo.NewAuthRepo(cfg)
 	default:
 		return nil
 	}

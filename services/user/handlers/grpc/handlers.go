@@ -76,6 +76,7 @@ func (h *Handler) RegisterUserDetails(ctx context.Context, rr *user.RegisterUser
 	usr.UserName = rr.GetUsername()
 	usr.PasswordHash = rr.GetPassword()
 
+	fmt.Println("register user details starting")
 	err := h.service.CreateUser(ctx, &usr)
 	if err != nil {
 		return nil, err

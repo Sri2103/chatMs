@@ -22,6 +22,7 @@ func SetUpServer(ctx context.Context, cfg *config.Config) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
+	e.GET("/", Home)
 	userHandler.RegisterUserHandler(e, cfg)
 	roomHandler.RegisterRoomHandlers(e, cfg)
 	ctxInt, stop := signal.NotifyContext(ctx, os.Interrupt)
@@ -37,4 +38,8 @@ func SetUpServer(ctx context.Context, cfg *config.Config) {
 	if err := e.Shutdown(ctx); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func Home(c echo.Context) error {
+	return c.String(http.StatusOK, "Running gateway ")
 }

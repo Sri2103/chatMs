@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/sri2103/chat_me/services/user/config"
 	"github.com/sri2103/chat_me/services/user/model"
 	"github.com/sri2103/chat_me/services/user/service"
