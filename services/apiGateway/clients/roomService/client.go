@@ -1,4 +1,4 @@
-package roomservice
+package roomClient
 
 import (
 	"github.com/sri2103/chat_me/protos/room"
