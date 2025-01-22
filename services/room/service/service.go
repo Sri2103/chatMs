@@ -29,13 +29,13 @@ func New(r RoomRepository) Service {
 }
 
 func (r *RoomService) CreateRoom(ctx context.Context, room *model.Room) (*model.Room, error) {
-	panic("not implemented") // TODO: Implement
+	return r.repo.SaveRoom(ctx, room)
 }
 
 func (r *RoomService) GetRoomDetails(ctx context.Context, roomId string) (*model.Room, error) {
-	panic("not implemented") // TODO: Implement
+	return r.repo.FindById(ctx, roomId)
 }
 
 func (r *RoomService) UpdateRoom(ctx context.Context, room *model.Room) error {
-	panic("not implemented") // TODO: Implement
+	return r.repo.UpdateRoom(ctx, room)
 }

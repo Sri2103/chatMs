@@ -13,6 +13,7 @@ import (
 
 var userClientUrl = "localhost:8081"
 var gatewayPort = ":7080"
+var roomClient = "localhost:8082"
 
 func main() {
 	logger, _ := zap.NewProduction()
@@ -28,6 +29,7 @@ func main() {
 	cfg := &config.Config{
 		UserClient: userClientUrl,
 		Port:       gatewayPort,
+		RoomClient: roomClient,
 	}
 
 	conn, err := userClient.ConnectUserClient(cfg)
