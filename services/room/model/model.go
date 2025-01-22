@@ -6,3 +6,8 @@ type Room struct {
 	CreatedBy string   `json:"created_by"`
 	Users     []string `json:"users"`
 }
+
+type Participant struct {
+	RoomId string
+	UserId string
+}

@@ -26,7 +26,6 @@ func main() {
 		SqlitePath:  *sqlitePath,
 		Environment: *env,
 	}
-	fmt.Println("sqlite path", *sqlitePath)
 	err := SetUpGrpCServer(cfg)
 	if err != nil {
 		log.Fatal(err)

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 
+	database "github.com/sri2103/chat_me/DB"
 	"github.com/sri2103/chat_me/services/room/config"
 	"github.com/sri2103/chat_me/services/room/model"
 	"github.com/sri2103/chat_me/services/room/service"
@@ -14,8 +15,14 @@ type SqlRepo struct {
 	Db *sql.DB
 }
 
-func NewSqlRepo(cfg *config.Config) service.RoomRepository {
-	Db, err := sql.Open("sqlite3", cfg.SqlitePath)
+func SetUpRepo(cfg *config.Config) service.RoomRepository {
+	Db, err := database.NewPostgresConnection(database.Config{
+		Host:     "localhost",
+		Port:     5432,
+		User:     "harsha",
+		Password: "password",
+		DBName:   "main",
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

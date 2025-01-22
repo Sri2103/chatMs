@@ -17,12 +17,10 @@ import (
 func main() {
 	fmt.Println("starting room service")
 	port := flag.Int("port", 8082, "port for the room service")
-	sqlitePath := flag.String("sqlite", "", "sqlite database path")
 	env := flag.String("env", "dev", "environment for the service")
 	flag.Parse()
 	cfg := &config.Config{
 		Port:        *port,
-		SqlitePath:  *sqlitePath,
 		Environment: *env,
 	}
 	err := SetupGRPCServer(cfg)
@@ -37,7 +35,7 @@ func SetupGRPCServer(cfg *config.Config) error {
 		return err
 	}
 
-	repo := sqlRepo.NewSqlRepo(cfg)
+	repo := sqlRepo.SetUpRepo(cfg)
 	svc := service.New(repo)
 	s := grpc.NewServer()
 	h := handler.NewGrpcHandler(svc)

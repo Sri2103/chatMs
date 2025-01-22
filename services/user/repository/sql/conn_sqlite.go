@@ -111,7 +111,6 @@ func (r *sqliteRepo) CreateUser(ctx context.Context, user *model.UserModel) erro
 		_ = tx.Rollback()
 	}()
 
-	fmt.Println(user, "User to add data")
 	err = r.createUser(tx, user)
 	if err != nil {
 		return err
