@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sri2103/chat_me/services/apiGateway/config"
+	roomHandler "github.com/sri2103/chat_me/services/apiGateway/services/room"
 	userHandler "github.com/sri2103/chat_me/services/apiGateway/services/user"
 	"github.com/sri2103/chat_me/services/apiGateway/utils"
 )
@@ -22,6 +23,7 @@ func SetUpServer(ctx context.Context, cfg *config.Config) {
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	userHandler.RegisterUserHandler(e, cfg)
+	roomHandler.RegisterRoomHandlers(e, cfg)
 	ctxInt, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 	go func() {
