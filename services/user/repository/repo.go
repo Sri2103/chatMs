@@ -9,7 +9,7 @@ import (
 func RepositoryFactory(cfg *config.Config) service.RepoInterface {
 	switch cfg.Environment {
 	case "dev":
-		return sqlRepo.NewSqlRepo(cfg)
+		return sqlRepo.NewPostgresRepo(cfg)
 	case "prod":
 		return nil
 	default:

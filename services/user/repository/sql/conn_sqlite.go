@@ -6,10 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"path"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
+	database "github.com/sri2103/chat_me/DB"
 	"github.com/sri2103/chat_me/services/user/config"
 	"github.com/sri2103/chat_me/services/user/model"
 	"github.com/sri2103/chat_me/services/user/service"
@@ -19,22 +19,35 @@ type sqliteRepo struct {
 	db *sql.DB
 }
 
-func NewSqlRepo(cfg *config.Config) service.RepoInterface {
-	p := path.Clean(cfg.SqlitePath)
-	fmt.Println(p, "path for db")
-	Db, err := sql.Open("sqlite3", p)
+func NewPostgresRepo(cfg *config.Config) service.RepoInterface {
+	db, err := database.NewPostgresConnection(database.Config{
+		Host:     "localhost",
+		Port:     5432,
+		User:     "harsha",
+		Password: "password",
+		DBName:   "main",
+	})
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	return &sqliteRepo{
-		db: Db,
+		db: db,
 	}
 }
 
 func (r *sqliteRepo) createUser(tx *sql.Tx, user *model.UserModel) error {
-	_, err := tx.Exec("insert into User (user_id, username,email,password_hash,role) values (?,?,?,?,?)", user.UserId, user.UserName,
-		user.Email, user.PasswordHash, user.Role)
-	return err
+	query := `
+		INSERT INTO public.users (user_id, username, email, "role", password_hash)
+		VALUES ($1, $2, $3, $4, $5)
+	`
+
+	_, err := tx.Exec(query, user.UserId, user.UserName, user.Email, user.PasswordHash, user.Role)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error {
@@ -46,7 +59,8 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 	defer func() {
 		_ = tx.Rollback()
 	}()
-	row := tx.QueryRow("select * from User where user_id=?", user.UserId)
+	query := `select * from public.users where user_id=$1`
+	row := tx.QueryRow(query, user.UserId)
 	if row.Err() != nil && errors.Is(row.Err(), sql.ErrNoRows) {
 		// create user
 		return r.createUser(tx, user)
@@ -54,7 +68,7 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 		return row.Err()
 	}
 
-	_, err = tx.Exec("update User set username=?,email=?,role=?", user.UserName, user.Email, user.Role)
+	_, err = tx.Exec("update public.users set username=?,email=?,role=?", user.UserName, user.Email, user.Role)
 	if err != nil {
 		return err
 	}
@@ -67,7 +81,7 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 }
 
 func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error) {
-	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from User where %s", query))
+	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from users where %s", query))
 	var usr model.UserModel
 	if row.Err() != nil {
 		return &usr, row.Err()
@@ -97,6 +111,15 @@ func (r *sqliteRepo) CreateUser(ctx context.Context, user *model.UserModel) erro
 		_ = tx.Rollback()
 	}()
 
+	fmt.Println(user, "User to add data")
 	err = r.createUser(tx, user)
-	return err
+	if err != nil {
+		return err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+	return nil
+
 }

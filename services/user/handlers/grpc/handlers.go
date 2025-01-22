@@ -47,7 +47,6 @@ func (h *Handler) GetUserDetails(ctx context.Context, gr *user.GetUserRequest) (
 		UserId:   usr.UserId,
 		Email:    usr.Email,
 		Username: usr.UserName,
-		Status:   "",
 	}, nil
 
 }
