@@ -1,14 +1,10 @@
-
+import ChatLayout from "./pages/ChatLayout"
 function App() {
 
   return (
     <>
-
-      <div>
-        <h1>
-
-          Hello world
-        </h1>
+      <div className="bg-gray-100 h-screen flex flex-col">
+        <ChatLayout />
       </div>
     </>
   )
