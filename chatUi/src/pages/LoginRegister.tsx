@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
