@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -42,7 +41,7 @@ func (r *sqliteRepo) createUser(tx *sql.Tx, user *model.UserModel) error {
 		VALUES ($1, $2, $3, $4, $5)
 	`
 
-	_, err := tx.Exec(query, user.UserId, user.UserName, user.Email, user.PasswordHash, user.Role)
+	_, err := tx.Exec(query, user.UserId, user.UserName, user.Email, user.Role, user.PasswordHash)
 
 	if err != nil {
 		return err
@@ -80,8 +79,8 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 
 }
 
-func (r *sqliteRepo) FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error) {
-	row := r.db.QueryRowContext(ctx, fmt.Sprintf("select * from users where %s", query))
+func (r *sqliteRepo) FindUserByEmail(ctx context.Context, query string) (*model.UserModel, error) {
+	row := r.db.QueryRowContext(ctx, "select * from users where email=?", query)
 	var usr model.UserModel
 	if row.Err() != nil {
 		return &usr, row.Err()

@@ -1,30 +1,54 @@
 import { useState } from "react";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-
-type Login = {
+import { Login, Register } from "../actions/user/register";
+import { useAppDispatch } from "../hooks/hook";
+type LoginPayload = {
   email: string;
   password: string;
 };
 
-type Register = {
+type RegisterPayload = {
   email: string;
   username: string;
   password: string;
 };
 
 const LoginRegister = () => {
+  const dispatch = useAppDispatch();
+
+  const loginForm = useForm<LoginPayload>();
+  const registerForm = useForm<RegisterPayload>();
+
   const [isLogin, setIsLogin] = useState(true);
 
-  const loginForm = useForm<Login>();
-  const registerForm = useForm<Register>();
-
-  const loginHandler: SubmitHandler<Login> = (data) => {
+  const loginHandler: SubmitHandler<LoginPayload> = (data) => {
     console.log(data);
+    try {
+      console.log(data);
+      const payload: LoginPayload = {
+        email: data.email,
+        password: data.password,
+      };
+      dispatch(Login(payload));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const registerHandler: SubmitHandler<Register> = (data) => {
-    console.log(data);
+  const registerHandler: SubmitHandler<RegisterPayload> = async (data) => {
+    try {
+      console.log(data);
+      const payload: RegisterPayload = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      };
+      const d = dispatch(Register(payload));
+      console.log(d.unwrap());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleForm = () => {

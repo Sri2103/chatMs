@@ -108,13 +108,13 @@ func (h *userHandler) LoginUser(c echo.Context) error {
 	}
 
 	AuthReq := &userpb.AuthenticateRequest{
-		Username: b.Email,
+		Email:    b.Email,
 		Password: b.Password,
 	}
 
 	resp, err := h.userService.AuthenticateUser(c.Request().Context(), AuthReq)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Error in remote request")
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error in remote request"+err.Error())
 	}
 
 	if !resp.Authenticated {

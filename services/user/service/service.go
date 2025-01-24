@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/sri2103/chat_me/services/user/model"
 )
 
 type RepoInterface interface {
 	SaveUser(ctx context.Context, user *model.UserModel) error
-	FindUserByIndentifier(ctx context.Context, query string) (*model.UserModel, error)
+	FindUserByEmail(ctx context.Context, email string) (*model.UserModel, error)
 	CreateUser(ctx context.Context, user *model.UserModel) error
 }
 
@@ -34,11 +35,18 @@ func (f *service) SaveUser(ctx context.Context, user *model.UserModel) error {
 }
 
 func (f *service) FindUser(ctx context.Context, query string) (*model.UserModel, error) {
-	return f.repo.FindUserByIndentifier(ctx, query)
+	return f.repo.FindUserByEmail(ctx, query)
 }
 
 func (f *service) AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error) {
-	panic("Not implemented") //TODO: implement this method
+	md, err := f.repo.FindUserByEmail(ctx, auth.UserName)
+	if err != nil {
+		return nil, err
+	}
+	if md.PasswordHash != auth.Password {
+		return nil, errors.New("password error")
+	}
+	return md, nil
 }
 
 func (f *service) CreateUser(ctx context.Context, user *model.UserModel) error {
