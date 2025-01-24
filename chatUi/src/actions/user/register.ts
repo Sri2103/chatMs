@@ -15,7 +15,7 @@ export type LoginPayload = {
 export const Register = createAsyncThunk(
   "users/Register",
   async (data: RegisterPayload) => {
-    const resp = await userApi.post("/register", JSON.stringify(data));
+    const resp = await userApi.post("/register", data);
     return resp;
   }
 );
@@ -23,7 +23,7 @@ export const Register = createAsyncThunk(
 export const Login = createAsyncThunk(
   "users/Login",
   async (data: LoginPayload) => {
-    const resp = await userApi.post("/login", JSON.stringify(data));
+    const resp = await userApi.post("/login", data);
     return resp;
   }
 );

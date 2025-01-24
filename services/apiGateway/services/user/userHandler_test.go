@@ -102,7 +102,7 @@ func Test_Login(t *testing.T) {
 		userAuthServiceMock := userMock.NewMockAuthServiceClient(t)
 		userService.EXPECT().
 			AuthenticateUser(reqTest.Context(), &user.AuthenticateRequest{
-				Username: "email",
+				Email:    "email",
 				Password: "pwd",
 			}).
 			Return(&user.AuthenticateResponse{

@@ -19,10 +19,10 @@ func NewGrpcServerHandler(srv service.Service) user.UserServiceServer {
 }
 
 func (h *Handler) AuthenticateUser(ctx context.Context, gr *user.AuthenticateRequest) (*user.AuthenticateResponse, error) {
-	username := gr.GetUsername()
+	email := gr.GetEmail()
 	password := gr.GetPassword()
 	usr, err := h.service.AuthenticateUser(ctx, &model.Credentials{
-		UserName: username,
+		Email:    email,
 		Password: password,
 	})
 	if err != nil {
