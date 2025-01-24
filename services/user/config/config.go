@@ -1,7 +1,9 @@
 package config
 
+import "database/sql"
+
 type Config struct {
 	Port        int
-	SqlitePath  string
 	Environment string
+	Db          *sql.DB
 }

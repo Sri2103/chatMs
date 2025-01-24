@@ -3,7 +3,6 @@ package sqlRepo
 import (
 	"context"
 	"database/sql"
-	"log"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -17,19 +16,16 @@ type SqlAuthRepo struct {
 }
 
 func NewAuthRepo(cfg *config.Config) service.AuthServiceRepo {
-	Db, err := sql.Open("sqlite3", cfg.SqlitePath)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return &SqlAuthRepo{
-		db: Db,
+		db: cfg.Db,
 	}
 
 }
 
 func (r *SqlAuthRepo) CreateAuth(ctx context.Context, m *model.AuthDetails) (*model.AuthModel, error) {
 	ID := uuid.NewString()
-	_, err := r.db.Exec("create into auth (Id,user_id,auth_id) values (?,?,?)", ID, m.UserId, m.AuthId)
+	query := `INSERT INTO auth (id, user_id, auth_id) VALUES($1, $2, $3);`
+	_, err := r.db.Exec(query, ID, m.UserId, m.AuthId)
 	if err != nil {
 		return nil, err
 	}

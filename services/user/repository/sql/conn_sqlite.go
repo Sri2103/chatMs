@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
-	database "github.com/sri2103/chat_me/DB"
 	"github.com/sri2103/chat_me/services/user/config"
 	"github.com/sri2103/chat_me/services/user/model"
 	"github.com/sri2103/chat_me/services/user/service"
@@ -20,19 +19,9 @@ type sqliteRepo struct {
 }
 
 func NewPostgresRepo(cfg *config.Config) service.RepoInterface {
-	db, err := database.NewPostgresConnection(database.Config{
-		Host:     "localhost",
-		Port:     5432,
-		User:     "harsha",
-		Password: "password",
-		DBName:   "main",
-	})
 
-	if err != nil {
-		log.Fatal(err)
-	}
 	return &sqliteRepo{
-		db: db,
+		db: cfg.Db,
 	}
 }
 

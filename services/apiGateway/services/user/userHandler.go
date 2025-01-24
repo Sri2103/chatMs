@@ -125,7 +125,7 @@ func (h *userHandler) LoginUser(c echo.Context) error {
 		AuthId: uuid.NewString(),
 	})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Error adding an auth entry")
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error adding an auth entry"+err.Error())
 	}
 
 	token, err := CreateToken(&TokenPayload{
