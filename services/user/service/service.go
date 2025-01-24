@@ -39,7 +39,7 @@ func (f *service) FindUser(ctx context.Context, query string) (*model.UserModel,
 }
 
 func (f *service) AuthenticateUser(ctx context.Context, auth *model.Credentials) (*model.UserModel, error) {
-	md, err := f.repo.FindUserByEmail(ctx, auth.UserName)
+	md, err := f.repo.FindUserByEmail(ctx, auth.Email)
 	if err != nil {
 		return nil, err
 	}

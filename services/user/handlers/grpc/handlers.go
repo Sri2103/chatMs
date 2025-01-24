@@ -22,7 +22,7 @@ func (h *Handler) AuthenticateUser(ctx context.Context, gr *user.AuthenticateReq
 	email := gr.GetEmail()
 	password := gr.GetPassword()
 	usr, err := h.service.AuthenticateUser(ctx, &model.Credentials{
-		UserName: email,
+		Email:    email,
 		Password: password,
 	})
 	if err != nil {

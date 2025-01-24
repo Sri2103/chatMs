@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"strings"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -79,18 +80,20 @@ func (r *sqliteRepo) SaveUser(ctx context.Context, user *model.UserModel) error 
 
 }
 
-func (r *sqliteRepo) FindUserByEmail(ctx context.Context, query string) (*model.UserModel, error) {
-	row := r.db.QueryRowContext(ctx, "select * from users where email=?", query)
+func (r *sqliteRepo) FindUserByEmail(ctx context.Context, email string) (*model.UserModel, error) {
+	email = strings.TrimSpace(email)
+	query := `select user_id, username, email, "role", password_hash from users u where email=$1`
+	row := r.db.QueryRowContext(ctx, query, email)
 	var usr model.UserModel
 	if row.Err() != nil {
 		return &usr, row.Err()
 	}
 	err := row.Scan(
-		usr.UserId,
-		usr.UserName,
-		usr.Email,
-		usr.PasswordHash,
-		usr.Role,
+		&usr.UserId,
+		&usr.UserName,
+		&usr.Email,
+		&usr.Role,
+		&usr.PasswordHash,
 	)
 	if err != nil {
 		return &usr, err
