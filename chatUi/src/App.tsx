@@ -3,6 +3,8 @@ import LoginRegister from "./pages/LoginRegister";
 import { ErrorBoundary } from "react-error-boundary";
 import { Provider } from "react-redux";
 import { store } from "./context/store";
+import ChatLayout from "./pages/ChatLayout";
+import RoomLayout from "./pages/RoomLayout";
 const Home = () => {
   return (
     <div className="bg-gray-100 h-screen flex justify-center items-center">
@@ -13,10 +15,10 @@ const Home = () => {
 
 function Fallback({
   error,
-  resetErrorBoundary,
+  // resetErrorBoundary,
 }: {
   error: Error;
-  resetErrorBoundary: () => void;
+  // resetErrorBoundary: () => void;
 }) {
   // Call resetErrorBoundary() to reset the error boundary and retry the render.
 
@@ -35,6 +37,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/authenticate" element={<LoginRegister />} />
+            <Route path="/chat" element={<ChatLayout />} />
+            <Route path="/room" element={<RoomLayout />} />
           </Routes>
         </Router>
       </Provider>

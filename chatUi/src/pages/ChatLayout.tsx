@@ -4,7 +4,7 @@ import ChatWindow from "../components/chatwindow";
 
 const ChatLayout: React.FC = () => {
   return (
-    <div className="flex h-full">
+    <div className="flex h-screen">
       <Sidebar />
       <ChatWindow />
     </div>
